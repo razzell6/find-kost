@@ -7,9 +7,9 @@ import KostCard from '../components/KostCard'; // Pastikan komponen kartu kost d
 const DATA_KOST_MASTER = [
   {
     id: 1,
-    title: "Kost Eksklusif Kebayoran Baru AC Dalam",
+    title: "Kost Melati Indah",
     type: "Campur",
-    location: "Kebayoran Baru, Jakarta Selatan",
+    location: " Jl. Sekaran Raya No. 12, Semarang",
     price: 2500000,
     rating: 4.8,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
@@ -17,9 +17,9 @@ const DATA_KOST_MASTER = [
   },
   {
     id: 2,
-    title: "Kost Putri Muslimah Dekat UI Depok",
+    title: "Kost Putri Cantik",
     type: "Putri",
-    location: "Margonda, Depok",
+    location: "Jl. Pakintelan No 7",
     price: 1200000,
     rating: 4.5,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
@@ -27,9 +27,9 @@ const DATA_KOST_MASTER = [
   },
   {
     id: 3,
-    title: "Kost Putra Mandiri Dekat ITS Surabaya",
+    title: "Kost Putra Sejahtera",
     type: "Putra",
-    location: "Sukolilo, Surabaya",
+    location: "Jl. Banaran Gang 3",
     price: 1500000,
     rating: 4.7,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
@@ -37,9 +37,9 @@ const DATA_KOST_MASTER = [
   },
   {
     id: 4,
-    title: "Aparkost Putri Premium Kebayoran",
+    title: "Kost Lily",
     type: "Putri",
-    location: "Kebayoran Lama, Jakarta Selatan",
+    location: "Jalan Dewi Sartika No 22",
     price: 3000000,
     rating: 4.9,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
