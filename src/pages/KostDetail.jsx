@@ -89,12 +89,6 @@ const handleBooking = () => {
               >
                 Masuk Sekarang (Simulasi)
               </button>
-              <button 
-                onClick={() => setShowAuthModal(false)}
-                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl transition"
-              >
-                Nanti Saja
-              </button>
             </div>
           </div>
         </div>
