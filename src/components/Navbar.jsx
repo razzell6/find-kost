@@ -24,8 +24,6 @@ export default function Navbar() {
         {/* Menu Navigasi */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
           <Link to="/" className="hover:text-indigo-600 transition">Home</Link>
-          <Link to="#" className="hover:text-indigo-600 transition">Cari Kost</Link>
-          <Link to="#" className="hover:text-indigo-600 transition">Contact</Link>
         </div>
 
         {/* Tombol Aksi Kanan */}
