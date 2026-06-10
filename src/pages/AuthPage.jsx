@@ -58,7 +58,7 @@ export default function AuthPage() {
         
         {/* Header Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black text-indigo-600 tracking-tight">PapiKostClone</h1>
+          <h1 className="text-3xl font-black text-indigo-600 tracking-tight">FindKost</h1>
           <p className="text-slate-500 text-sm mt-1">
             {isRegister ? 'Buat akun untuk mencari kost idaman' : 'Masuk untuk menjelajahi ribuan kost'}
           </p>
