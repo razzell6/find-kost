@@ -10,7 +10,7 @@ const DATA_KOST_MASTER = [
     title: "Kost Melati Indah",
     type: "Campur",
     location: " Jl. Sekaran Raya No. 12, Semarang",
-    price: 2500000,
+    price: 600000,
     rating: 4.8,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
     image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80"
@@ -20,7 +20,7 @@ const DATA_KOST_MASTER = [
     title: "Kost Putri Cantik",
     type: "Putri",
     location: "Jl. Pakintelan No 7",
-    price: 1200000,
+    price: 700000,
     rating: 4.5,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
     image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=500&q=80"
@@ -30,7 +30,7 @@ const DATA_KOST_MASTER = [
     title: "Kost Putra Sejahtera",
     type: "Putra",
     location: "Jl. Banaran Gang 3",
-    price: 1500000,
+    price: 550000,
     rating: 4.7,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
     image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=500&q=80"
@@ -40,7 +40,7 @@ const DATA_KOST_MASTER = [
     title: "Kost Lily",
     type: "Putri",
     location: "Jalan Dewi Sartika No 22",
-    price: 3000000,
+    price: 650000,
     rating: 4.9,
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
     image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=500&q=80"
