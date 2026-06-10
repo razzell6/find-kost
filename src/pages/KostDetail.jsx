@@ -58,12 +58,6 @@ const handleBooking = () => {
               </button>
               
               {/* Jalankan fungsi proteksi saat diklik */}
-              <button 
-                onClick={handleBooking}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md"
-              >
-                Booking Kamar Sekarang
-              </button>
             </div>
           </aside>
         </div>
@@ -88,6 +82,12 @@ const handleBooking = () => {
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition"
               >
                 Masuk Sekarang (Simulasi)
+              </button>
+              <button 
+                onClick={() => setShowAuthModal(false)}
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl transition"
+              >
+                Nanti Saja
               </button>
             </div>
           </div>
