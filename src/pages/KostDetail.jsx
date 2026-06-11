@@ -8,10 +8,10 @@ export default function KostDetail() {
   const [showAuthModal, setShowAuthModal] = useState(false); // State Modal Pop-up
 
   const kost = {
-    title: "Kost Eksklusif Kebayoran Baru AC Dalam",
+    title: "Kost Melati Indah",
     type: "Campur",
-    location: "Kebayoran Baru, Jakarta Selatan",
-    price: 2500000,
+    location: "Jl. Sekaran Raya No. 12, Semarang",
+    price: 600000,
     description: "Kost mewah berlokasi sangat strategis di area Kebayoran Baru. Dekat dengan stasiun MRT, pusat perbelanjaan, perkantoran Sudirman, dan berbagai kafe.",
     facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
     image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1200&q=80"
