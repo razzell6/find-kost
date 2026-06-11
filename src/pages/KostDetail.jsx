@@ -18,10 +18,9 @@ export default function KostDetail() {
   };
 
   // Fungsi Proteksi Checkout
- // Ganti fungsi lama kamu dengan ini
-const handleBooking = () => {
-  alert("🎉 Akses terverifikasi! Mengalihkan kamu ke halaman form pembayaran...");
-};
+  const handleBooking = () => {
+    alert("🚀 Akses terverifikasi! Mengalihkan kamu ke halaman form pembayaran...");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between relative">
@@ -38,6 +37,22 @@ const handleBooking = () => {
               <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-md">Kost {kost.type}</span>
               <h1 className="text-2xl font-extrabold text-slate-900 mt-3 mb-2">{kost.title}</h1>
               <p className="text-sm text-slate-500 mb-4">📍 {kost.location}</p>
+              
+              {/* ========================================== */}
+              {/* BAGIAN FASILITAS YANG DITAMBAHKAN */}
+              {/* ========================================== */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                {kost.facilities?.map((facility, index) => (
+                  <span 
+                    key={index} 
+                    className="bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1.5 rounded-xl border border-slate-200/50"
+                  >
+                    {facility}
+                  </span>
+                ))}
+              </div>
+              {/* ========================================== */}
+
               <hr className="border-slate-100 my-4" />
               <h2 className="text-lg font-bold text-slate-800 mb-3">Deskripsi Properti</h2>
               <p className="text-slate-600 text-sm leading-relaxed">{kost.description}</p>
