@@ -56,11 +56,12 @@ export default function Home() {
   }, [searchQuery, selectedTipe, kosts]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 w-full block">
+      {/* NAVBAR */}
       <Navbar />
 
-      {/* 💙 HERO SECTION / TEMPAT NYARI KOST (SUDAH KEMBALI) */}
-      <section className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-16 px-4 text-center">
+      {/* HERO SECTION / TEMPAT NYARI KOST */}
+      <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-16 px-4 text-center block w-full">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">
             Cari Kost Impianmu di Sini
@@ -103,10 +104,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* 🏡 DAFTAR KOST UTAMA */}
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      {/* DAFTAR KOST UTAMA */}
+      <main className="max-w-7xl mx-auto px-4 py-12 block">
         <div className="flex justify-between items-baseline mb-6 border-b border-slate-200 pb-3">
           <h2 className="text-xl md:text-2xl font-bold text-slate-800">
             {selectedTipe !== 'Semua' ? `Rekomendasi Kost ${selectedTipe}` : 'Semua Rekomendasi Kost'}
@@ -125,7 +126,7 @@ export default function Home() {
         ) : filteredKosts.length === 0 ? (
           /* Tampilan jika kost yang dicari atau difilter tidak ketemu */
           <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-200 p-8">
-            <span className="text-4xl mb-3 block">📭</span>
+            <span className="text-4xl mb-3 block">⚠️</span>
             <p className="text-slate-700 font-bold mb-1">Kost Tidak Ditemukan</p>
             <p className="text-slate-400 text-xs max-w-xs mx-auto">
               Maaf, tidak ada kos-kosan yang cocok dengan kata kunci "{searchQuery}" atau filter tipe tersebut.
