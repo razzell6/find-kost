@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal'; // Import modal baru
 
@@ -7,10 +7,26 @@ export default function Navbar() {
   const { isLoggedIn, user, logout } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('login');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const openAuthModal = (mode) => {
     setModalMode(mode);
     setModalOpen(true);
+  };
+
+  // Klik "Contact" -> scroll ke section #contact di Home
+  const handleContactClick = (e) => {
+    e.preventDefault();
+
+    if (location.pathname === '/') {
+      // Sudah di Home, langsung scroll smooth
+      const el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Belum di Home, pindah ke Home dulu + bawa hash #contact
+      navigate('/#contact');
+    }
   };
 
   return (
@@ -24,7 +40,13 @@ export default function Navbar() {
         {/* Menu Navigasi */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
           <Link to="/" className="hover:text-indigo-600 transition">Home</Link>
-          <Link to="/kosts" className="hover:text-indigo-600 transition">Contact</Link>
+          <a
+            href="#contact"
+            onClick={handleContactClick}
+            className="hover:text-indigo-600 transition cursor-pointer"
+          >
+            Contact
+          </a>
         </div>
 
         {/* Tombol Aksi Kanan */}
@@ -32,7 +54,7 @@ export default function Navbar() {
           {isLoggedIn ? (
             <div className="flex items-center gap-4">
               <span className="text-sm font-semibold text-slate-700">👋 {user?.username}</span>
-              <button 
+              <button
                 onClick={logout}
                 className="text-sm font-medium text-red-500 hover:text-red-700 transition"
               >
@@ -42,15 +64,15 @@ export default function Navbar() {
           ) : (
             <>
               {/* Tombol Masuk */}
-              <button 
+              <button
                 onClick={() => openAuthModal('login')}
                 className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
               >
                 Masuk
               </button>
-              
+
               {/* Tombol Daftar */}
-              <button 
+              <button
                 onClick={() => openAuthModal('register')}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
               >
@@ -62,10 +84,10 @@ export default function Navbar() {
       </nav>
 
       {/* Tampilkan Modal Auth secara global di navbar */}
-      <AuthModal 
-        isOpen={modalOpen} 
-        onClose={() => setModalOpen(false)} 
-        initialMode={modalMode} 
+      <AuthModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialMode={modalMode}
       />
     </header>
   );
