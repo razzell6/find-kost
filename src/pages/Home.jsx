@@ -55,6 +55,16 @@ export default function Home() {
     setFilteredKosts(hasilSaring);
   }, [searchQuery, selectedTipe, kosts]);
 
+  // 3. Scroll otomatis ke section #contact kalau halaman dibuka dengan hash (misal dari Navbar di halaman lain)
+  useEffect(() => {
+    if (window.location.hash === '#contact') {
+      const el = document.getElementById('contact');
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 w-full block">
       {/* NAVBAR */}
@@ -147,6 +157,102 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* SECTION HUBUNGI KAMI / CONTACT */}
+      <section id="contact" className="bg-white py-16 px-4 block w-full border-t border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-bold tracking-widest text-indigo-600 border border-indigo-200 bg-indigo-50 rounded-full px-4 py-1 mb-4">
+              HUBUNGI KAMI
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 leading-tight">
+              Ada Pertanyaan? <br className="hidden md:block" />Kami Siap Membantu
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            {/* Kiri: Info Kontak */}
+            <div>
+              <p className="text-slate-500 text-sm md:text-base mb-8 max-w-md">
+                Tim FindKost siap membantu kamu menemukan kost terbaik. Jangan ragu untuk menghubungi kami kapan saja!
+              </p>
+
+              <div className="space-y-5 mb-8">
+                {/* Telepon / WhatsApp */}
+                <div className="flex items-start gap-4">
+                  <div className="bg-indigo-50 text-indigo-600 rounded-lg p-3 text-xl">📞</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 tracking-wide">TELEPON / WHATSAPP</p>
+                    <p className="text-slate-800 font-semibold">+62 812-3456-7890</p>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="flex items-start gap-4">
+                  <div className="bg-indigo-50 text-indigo-600 rounded-lg p-3 text-xl">✉️</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 tracking-wide">EMAIL</p>
+                    <p className="text-slate-800 font-semibold">support@findkost.com</p>
+                  </div>
+                </div>
+
+                {/* Area Layanan */}
+                <div className="flex items-start gap-4">
+                  <div className="bg-indigo-50 text-indigo-600 rounded-lg p-3 text-xl">📍</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-500 tracking-wide">AREA LAYANAN</p>
+                    <p className="text-slate-800 font-semibold">Sekitar Universitas Negeri Semarang</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sosial Media */}
+              <div className="flex gap-3">
+                <a href="https://instagram.com/findkost" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 border border-slate-200 rounded-full px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-300 hover:text-indigo-600 transition">📷 Instagram</a>
+                <a href="https://tiktok.com/@findkost" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 border border-slate-200 rounded-full px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-300 hover:text-indigo-600 transition">🎵 TikTok</a>
+              </div>
+            </div>
+
+            {/* Kanan: Kartu Lokasi */}
+            <div className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-10 text-center shadow-lg flex flex-col items-center justify-center min-h-[260px]">
+              <div className="text-4xl mb-4">📍</div>
+              <h3 className="text-white text-xl md:text-2xl font-bold mb-1">Sekitar Unnes</h3>
+              <p className="text-indigo-300 font-semibold text-sm md:text-base">Universitas Negeri Semarang</p>
+              <p className="text-slate-400 text-xs md:text-sm mt-1">Kota Semarang, Jawa Tengah</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-slate-900 text-slate-300 py-12 px-4 block w-full">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div>
+            <h3 className="text-white text-lg font-bold mb-3">FindKost</h3>
+            <p className="text-sm text-slate-400 max-w-xs">
+              Platform tepercaya penyedia info hunian kost terbaik, murah, aman, dan berfasilitas lengkap disekitar UNNES.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-3">Pencarian Populer</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li><a href="#" className="hover:text-indigo-400 transition">Kost Banaran</a></li>
+              <li><a href="#" className="hover:text-indigo-400 transition">Kost Sekaran</a></li>
+              <li><a href="#" className="hover:text-indigo-400 transition">Kost Patemon</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-semibold mb-3">Kontak Kami untuk mendaftarkan Kost</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li>Email: support@findkost.com</li>
+              <li>WhatsApp: +62 812-3456-7890</li>
+              <li>Instagram: @findkost</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
