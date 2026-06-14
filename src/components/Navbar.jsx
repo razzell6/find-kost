@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import AuthModal from './AuthModal'; // Import modal baru
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import AuthModal from "./AuthModal";
 
 export default function Navbar() {
-  const { isLoggedIn, user, logout } = useAuth();
+  // 🛠️ FIX 1: Gunakan 'user' untuk ganti 'isLoggedIn', dan 'signOut' untuk ganti 'logout'
+  const { user, signOut } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState('login');
+  const [modalMode, setModalMode] = useState("login");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,13 +20,11 @@ export default function Navbar() {
   const handleContactClick = (e) => {
     e.preventDefault();
 
-    if (location.pathname === '/') {
-      // Sudah di Home, langsung scroll smooth
-      const el = document.getElementById('contact');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname === "/") {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     } else {
-      // Belum di Home, pindah ke Home dulu + bawa hash #contact
-      navigate('/#contact');
+      navigate("/#contact");
     }
   };
 
@@ -39,23 +38,23 @@ export default function Navbar() {
 
         {/* Menu Navigasi */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-          <Link to="/" className="hover:text-indigo-600 transition">Home</Link>
-          <a
-            href="#contact"
-            onClick={handleContactClick}
-            className="hover:text-indigo-600 transition cursor-pointer"
-          >
+          <Link to="/" className="hover:text-indigo-600 transition">
+            Home
+          </Link>
+          <a href="#contact" onClick={handleContactClick} className="hover:text-indigo-600 transition cursor-pointer">
             Contact
           </a>
         </div>
 
         {/* Tombol Aksi Kanan */}
         <div className="flex items-center gap-4">
-          {isLoggedIn ? (
+          {/* 🛠️ FIX 2: Cek status apakah 'user' ada nilainya (berarti sudah login) */}
+          {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-slate-700">👋 {user?.username}</span>
+              {/* 🛠️ FIX 3: Supabase menyimpan data pengenal di properti .email */}
+              <span className="text-sm font-semibold text-slate-700">👋 {user?.email}</span>
               <button
-                onClick={logout}
+                onClick={signOut} // 🛠️ FIX 4: Panggil fungsi signOut dari Supabase
                 className="text-sm font-medium text-red-500 hover:text-red-700 transition"
               >
                 Keluar
@@ -64,18 +63,12 @@ export default function Navbar() {
           ) : (
             <>
               {/* Tombol Masuk */}
-              <button
-                onClick={() => openAuthModal('login')}
-                className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-              >
+              <button onClick={() => openAuthModal("login")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition">
                 Masuk
               </button>
 
               {/* Tombol Daftar */}
-              <button
-                onClick={() => openAuthModal('register')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm"
-              >
+              <button onClick={() => openAuthModal("register")} className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shadow-sm">
                 Daftar
               </button>
             </>
@@ -84,11 +77,7 @@ export default function Navbar() {
       </nav>
 
       {/* Tampilkan Modal Auth secara global di navbar */}
-      <AuthModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        initialMode={modalMode}
-      />
+      <AuthModal isOpen={modalOpen} onClose={() => setModalOpen(false)} initialMode={modalMode} />
     </header>
   );
 }

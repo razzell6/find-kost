@@ -1,53 +1,35 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../utils/supabase'
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../utils/supabase";
 
-const AuthContext = createContext({})
+const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Memeriksa sesi aktif saat aplikasi pertama kali dimuat
+    // 1. Ambil sesi user yang aktif saat pertama kali aplikasi dimuat
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    // Mendengarkan perubahan status autentikasi (login/logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    // 2. Dengarkan perubahan status secara otomatis (Login / Logout / Register)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    return () => subscription.unsubscribe()
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
-  // Fungsi Register (Daftar Akun Baru)
-  const signUp = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) throw error
-    return data
-  }
+  const signUp = (email, password) => supabase.auth.signUp({ email, password });
+  const signIn = (email, password) => supabase.auth.signInWithPassword({ email, password });
+  const signOut = () => supabase.auth.signOut();
 
-  // Fungsi Login
-  const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
-    return data
-  }
+  return <AuthContext.Provider value={{ user, signUp, signIn, signOut, loading }}>{!loading && children}</AuthContext.Provider>;
+};
 
-  // Fungsi Logout
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-  }
-
-  return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
-      {!loading && children}
-    </AuthContext.Provider>
-  )
-}
-
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
