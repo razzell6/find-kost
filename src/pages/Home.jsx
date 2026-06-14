@@ -256,7 +256,7 @@ export default function Home() {
             {/* Heading & Deskripsi */}
             <div className="space-y-3">
               <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-[1.1] tracking-tight">
-                Ada Pertanyaan?<br />
+                Ada Pertanyaan? Atau Ingin Menambahkan Kost?<br />
                 Kami Siap Membantu
               </h2>
               <p className="text-slate-400 text-sm leading-relaxed">
