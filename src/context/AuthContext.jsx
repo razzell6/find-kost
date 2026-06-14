@@ -1,61 +1,53 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../utils/supabase'
 
-const AuthContext = createContext();
+const AuthContext = createContext({})
 
-export function AuthProvider({ children }) {
-  // Ambil data user yang sedang login dari localStorage (jika ada) saat pertama kali load
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('currentUser');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Memeriksa sesi aktif saat aplikasi pertama kali dimuat
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    // Mendengarkan perubahan status autentikasi (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   // Fungsi Register (Daftar Akun Baru)
-  const register = (username, password) => {
-    const existingUsers = JSON.parse(localStorage.getItem('kost_users')) || [];
-    
-    // Cek apakah username sudah dipakai
-    const isUserExist = existingUsers.some((u) => u.username === username);
-    if (isUserExist) {
-      return { success: false, message: 'Username sudah terdaftar!' };
-    }
+  const signUp = async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw error
+    return data
+  }
 
-    // Simpan user baru ke dalam array list
-    const updatedUsers = [...existingUsers, { username, password }];
-    localStorage.setItem('kost_users', JSON.stringify(updatedUsers));
-    return { success: true, message: 'Registrasi berhasil! Silakan masuk.' };
-  };
+  // Fungsi Login
+  const signIn = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+    return data
+  }
 
-  // Fungsi Login (Masuk)
-  const login = (username, password) => {
-    const existingUsers = JSON.parse(localStorage.getItem('kost_users')) || [];
-    
-    // Cari user yang cocok dengan username dan password
-    const validUser = existingUsers.find(
-      (u) => u.username === username && u.password === password
-    );
-
-    if (!validUser) {
-      return { success: false, message: 'Username atau password salah!' };
-    }
-
-    // Jika cocok, simpan ke sesi aktif
-    const sessionUser = { username: validUser.username };
-    localStorage.setItem('currentUser', JSON.stringify(sessionUser));
-    setUser(sessionUser);
-    return { success: true };
-  };
-
-  // Fungsi Logout (Keluar)
-  const logout = () => {
-    localStorage.removeItem('currentUser');
-    setUser(null);
-  };
+  // Fungsi Logout
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+  }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn: !!user, user, register, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+      {!loading && children}
     </AuthContext.Provider>
-  );
+  )
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)

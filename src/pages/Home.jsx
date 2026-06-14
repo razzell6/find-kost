@@ -3,63 +3,14 @@ import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import KostCard from '../components/KostCard';
-
-// ============================================================
-// DATA MASTER KOST
-// ============================================================
-const DATA_KOST_MASTER = [
-  {
-    id: 1,
-    title: "Kost Melati Indah",
-    type: "Campur",
-    location: "Jl. Sekaran Raya No. 12, Semarang",
-    price: 600000,
-    rating: 4.8,
-    jarak: 300,
-    kapasitas: 1,
-    facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
-    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80"
-  },
-  {
-    id: 2,
-    title: "Kost Putri Cantik",
-    type: "Putri",
-    location: "Jl. Pakintelan No 7",
-    price: 700000,
-    rating: 4.5,
-    jarak: 750,
-    kapasitas: 1,
-    facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
-    image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=500&q=80"
-  },
-  {
-    id: 3,
-    title: "Kost Putra Sejahtera",
-    type: "Putra",
-    location: "Jl. Banaran Gang 3",
-    price: 450000,
-    rating: 4.7,
-    jarak: 1500,
-    kapasitas: 2,
-    facilities: ["WiFi High-Speed", "Kasur", "Lemari", "Kipas Angin"],
-    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=500&q=80"
-  },
-  {
-    id: 4,
-    title: "Kost Lily",
-    type: "Putri",
-    location: "Jalan Dewi Sartika No 22",
-    price: 650000,
-    rating: 4.9,
-    jarak: 450,
-    kapasitas: 1,
-    facilities: ["AC 1 PK", "WiFi High-Speed", "Kamar Mandi Dalam", "Water Heater"],
-    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=500&q=80"
-  }
-];
+import { supabase } from '../utils/supabase'; // IMPORT SUPABASE
 
 export default function Home() {
   const location = useLocation();
+
+  // ── STATE UNTUK DATA DATABASE ──
+  const [dataKost, setDataKost] = useState([]);
+  const [isLoadingDB, setIsLoadingDB] = useState(true);
 
   // ── STATE FILTER ──
   const [keywordLokasi, setKeywordLokasi] = useState('');
@@ -68,6 +19,47 @@ export default function Home() {
   const [filterJarak, setFilterJarak]     = useState('semua');
   const [filterFasilitas, setFilterFasilitas] = useState('semua');
   const [filterKapasitas, setFilterKapasitas] = useState('semua');
+
+  // ── MENGAMBIL DATA DARI SUPABASE ──
+  useEffect(() => {
+    const fetchKostDariDatabase = async () => {
+      setIsLoadingDB(true);
+      
+      // Ambil data dari tabel 'kosts' dan gabungkan (JOIN) dengan 'rooms'
+      const { data, error } = await supabase
+        .from('kosts')
+        .select('*, rooms(*)'); // Mengambil kost dan info kamar di dalamnya
+
+      if (error) {
+        console.error("Gagal mengambil data Supabase:", error.message);
+      } else if (data) {
+        // Kita format data dari database agar sesuai dengan desain KostCard kamu
+        const dataFormatUntukUI = data.map((item) => {
+          // Ambil detail kamar pertama jika ada, jika belum ada kita beri nilai default
+          const kamar = item.rooms && item.rooms.length > 0 ? item.rooms[0] : null;
+
+          return {
+            id: item.id,
+            title: item.nama_kost,
+            type: "Campur", // Sementara default Campur karena belum ada tabel gender kost
+            location: `${item.alamat}, ${item.area}`,
+            price: kamar ? kamar.harga_per_bulan : 0, 
+            rating: 4.8, // Default rating (opsional, karena belum bikin tabel review)
+            jarak: 500,  // Default jarak
+            kapasitas: 1, // Default kapasitas
+            facilities: kamar && kamar.fasilitas ? kamar.fasilitas : ["Belum ada info fasilitas"],
+            // Gunakan gambar dummy sementara
+            image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80"
+          };
+        });
+        
+        setDataKost(dataFormatUntukUI);
+      }
+      setIsLoadingDB(false);
+    };
+
+    fetchKostDariDatabase();
+  }, []);
 
   // ── Auto-scroll ke section Contact kalau URL membawa hash #contact ──
   useEffect(() => {
@@ -80,14 +72,14 @@ export default function Home() {
     }
   }, [location]);
 
-  // ── LOGIKA FILTER ──
-  const kostTerfilter = DATA_KOST_MASTER.filter((item) => {
+  // ── LOGIKA FILTER (Sekarang memfilter data dari Database) ──
+  const kostTerfilter = dataKost.filter((item) => {
     const cocokTipe = filterTipe === 'Semua' || item.type.toLowerCase() === filterTipe.toLowerCase();
     const cocokLokasi = item.location.toLowerCase().includes(keywordLokasi.toLowerCase()) ||
                         item.title.toLowerCase().includes(keywordLokasi.toLowerCase());
 
     let cocokHarga = true;
-    if      (filterHarga === 'dibawah500')  cocokHarga = item.price < 500000;
+    if      (filterHarga === 'dibawah500')  cocokHarga = item.price > 0 && item.price < 500000;
     else if (filterHarga === '500-750')     cocokHarga = item.price >= 500000 && item.price <= 750000;
     else if (filterHarga === '750-1000')    cocokHarga = item.price > 750000 && item.price <= 1000000;
     else if (filterHarga === 'diatas1000')  cocokHarga = item.price > 1000000;
@@ -219,15 +211,19 @@ export default function Home() {
             <p className="text-xs text-slate-500 mt-0.5">Pilihan kost terbaik berdasarkan pencarian kamu</p>
           </div>
           <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md">
-            {kostTerfilter.length} Kost Ditemukan
+            {isLoadingDB ? "Memuat Data..." : `${kostTerfilter.length} Kost Ditemukan`}
           </span>
         </div>
 
-        {kostTerfilter.length === 0 ? (
+        {isLoadingDB ? (
+          <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm animate-pulse">
+            <h4 className="text-lg font-bold text-slate-500">🔄 Sedang mengambil data dari Database Supabase...</h4>
+          </div>
+        ) : kostTerfilter.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200">
             <span className="text-4xl">🔍</span>
             <h4 className="text-base font-bold text-slate-700 mt-2">Kost Tidak Ditemukan</h4>
-            <p className="text-xs text-slate-400 mt-1">Coba ubah filter pencarian kamu.</p>
+            <p className="text-xs text-slate-400 mt-1">Coba ubah filter pencarian kamu atau pastikan data ada di Supabase.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -239,8 +235,7 @@ export default function Home() {
       </main>
 
       {/* ═══════════════════════════════════════════════════════
-          ✅ SECTION BARU: HUBUNGI KAMI
-          Layout & bubble dari gambar 2, warna dari FindKost
+          SECTION: HUBUNGI KAMI
       ════════════════════════════════════════════════════════ */}
       <section id="contact" className="bg-white py-20 px-4 border-t border-slate-100 scroll-mt-24">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
@@ -248,12 +243,10 @@ export default function Home() {
           {/* ── KIRI: Kontak ── */}
           <div className="space-y-8">
 
-            {/* Badge "HUBUNGI KAMI" */}
             <span className="inline-flex items-center border border-slate-300 text-slate-500 text-[11px] font-bold uppercase tracking-[0.18em] px-4 py-1.5 rounded-full">
               Hubungi Kami
             </span>
 
-            {/* Heading & Deskripsi */}
             <div className="space-y-3">
               <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-[1.1] tracking-tight">
                 Ada Pertanyaan? Atau Ingin Menambahkan Kost?<br />
@@ -265,10 +258,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* ── Contact Items (bubble) ── */}
             <div className="space-y-5">
-
-              {/* Telepon / WhatsApp */}
               <div className="flex items-center gap-4">
                 <div className="w-13 h-13 min-w-[52px] min-h-[52px] bg-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
                   <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -281,7 +271,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Email */}
               <div className="flex items-center gap-4">
                 <div className="w-13 h-13 min-w-[52px] min-h-[52px] bg-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
                   <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -294,7 +283,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Area Layanan */}
               <div className="flex items-center gap-4">
                 <div className="w-13 h-13 min-w-[52px] min-h-[52px] bg-indigo-100 rounded-2xl flex items-center justify-center shadow-sm">
                   <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -309,16 +297,13 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ── Tombol Sosial Media ── */}
             <div className="flex gap-3 flex-wrap">
-              {/* Instagram */}
               <button className="flex items-center gap-2 border border-slate-200 text-slate-600 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all duration-200">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
                 </svg>
                 Instagram
               </button>
-              {/* TikTok */}
               <button className="flex items-center gap-2 border border-slate-200 text-slate-600 text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition-all duration-200">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.78a4.84 4.84 0 01-1.01-.09z"/>
@@ -330,22 +315,13 @@ export default function Home() {
 
           {/* ── KANAN: Location Card ── */}
           <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-800 rounded-3xl flex flex-col items-center justify-center text-white text-center py-16 px-8 shadow-2xl shadow-indigo-900/30">
-
-            {/* Map Pin (bubble) */}
             <div className="mb-8 flex flex-col items-center">
-              {/* Kepala pin */}
               <div className="w-11 h-11 bg-rose-500 rounded-full shadow-xl shadow-rose-500/60 flex items-center justify-center">
                 <div className="w-4 h-4 bg-white/30 rounded-full"></div>
               </div>
-              {/* Jarum pin */}
-              <div
-                style={{ width: '3px', height: '28px', background: 'linear-gradient(to bottom, #f43f5e, #9f1239)', borderRadius: '0 0 3px 3px' }}
-              ></div>
-              {/* Bayangan di tanah */}
+              <div style={{ width: '3px', height: '28px', background: 'linear-gradient(to bottom, #f43f5e, #9f1239)', borderRadius: '0 0 3px 3px' }}></div>
               <div className="w-5 h-1.5 bg-black/25 rounded-full blur-sm mt-0.5"></div>
             </div>
-
-            {/* Teks Lokasi */}
             <h3 className="text-2xl font-black tracking-tight">Sekitar Unnes</h3>
             <p className="text-indigo-300 text-sm mt-2 font-medium">Universitas Negeri Semarang</p>
             <p className="text-indigo-400 text-xs mt-1">Kota Semarang, Jawa Tengah</p>
@@ -353,9 +329,6 @@ export default function Home() {
 
         </div>
       </section>
-      {/* ═══════════════════════════════════════════════════════
-          END SECTION HUBUNGI KAMI
-      ════════════════════════════════════════════════════════ */}
 
       <Footer />
     </div>

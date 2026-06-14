@@ -1,10 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx' // Memastikan App.jsx di atas yang dieksekusi
+import App from './App.jsx' 
 import './index.css'
+import { AuthProvider } from './context/AuthContext.jsx' // IMPORT BARU
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    {/* Bungkus App dengan AuthProvider */}
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>,
 )
