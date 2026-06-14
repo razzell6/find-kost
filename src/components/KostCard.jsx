@@ -9,12 +9,15 @@ export default function KostCard({ kost }) {
   const fasilitasKost = kost.fasilitas || kost.facilities || [];
   const lokasiKost = kost.alamat || kost.location;
 
+  // Link gambar kamar estetik dari Unsplash sebagai cadangan jika kost.image kosong
+  const gambarDefault = 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=500&q=80';
+
   return (
-    <article className="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition flex flex-col">
+    <article className="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition flex flex-col group">
       {/* Gambar Kost */}
-      <figure className="relative aspect-[4/3] w-full bg-slate-200 overflow-hidden">
+      <figure className="relative aspect-[4/3] w-full bg-slate-100 overflow-hidden">
         <img 
-          src={kost.image || 'https://via.placeholder.com/400x300'} 
+          src={kost.image || gambarDefault} 
           alt={namaKost}
           className="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
           loading="lazy"
@@ -30,9 +33,9 @@ export default function KostCard({ kost }) {
       {/* Konten Detail */}
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 mb-1">
-          <span>{lokasiKost}</span>
+          <span className="line-clamp-1">{lokasiKost}</span>
           <span>•</span>
-          <span className="text-amber-500">⭐ {ratingKost}</span>
+          <span className="text-amber-500 whitespace-nowrap">⭐ {ratingKost}</span>
         </div>
 
         <h3 className="font-bold text-slate-800 text-base line-clamp-1 mb-2">
@@ -42,7 +45,7 @@ export default function KostCard({ kost }) {
         </h3>
 
         {/* Fasilitas Singkat */}
-        <div className="flex flex-wrap gap-2 mb-4 text-xs text-slate-500">
+        <div className="flex flex-wrap gap-1.5 mb-4 text-xs text-slate-500">
           {fasilitasKost && fasilitasKost.length > 0 ? (
             fasilitasKost.map((fac, idx) => (
               <span key={idx} className="bg-slate-100 px-2 py-1 rounded">
