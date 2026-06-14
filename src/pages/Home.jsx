@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import KostCard from '../components/KostCard';
@@ -58,6 +59,7 @@ const DATA_KOST_MASTER = [
 ];
 
 export default function Home() {
+  const location = useLocation();
 
   // ── STATE FILTER ──
   const [keywordLokasi, setKeywordLokasi] = useState('');
@@ -66,6 +68,17 @@ export default function Home() {
   const [filterJarak, setFilterJarak]     = useState('semua');
   const [filterFasilitas, setFilterFasilitas] = useState('semua');
   const [filterKapasitas, setFilterKapasitas] = useState('semua');
+
+  // ── Auto-scroll ke section Contact kalau URL membawa hash #contact ──
+  useEffect(() => {
+    if (location.hash === '#contact') {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('contact');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   // ── LOGIKA FILTER ──
   const kostTerfilter = DATA_KOST_MASTER.filter((item) => {
@@ -229,7 +242,7 @@ export default function Home() {
           ✅ SECTION BARU: HUBUNGI KAMI
           Layout & bubble dari gambar 2, warna dari FindKost
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-white py-20 px-4 border-t border-slate-100">
+      <section id="contact" className="bg-white py-20 px-4 border-t border-slate-100 scroll-mt-24">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
 
           {/* ── KIRI: Kontak ── */}
